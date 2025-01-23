@@ -20,12 +20,12 @@ def auth_login_post():
     mycursor = get_db().cursor()
     login = request.form.get('login')
     password = request.form.get('password')
-    tuple_select = (login,)
-    sql = " SELECT * from utilisateur WHERE login = %s "
-    retour = mycursor.execute(sql, (login,))
+    tuple_select = (login)
+    sql = " SELECT login, password, role, est_actif, nom, email FROM utilisateur WHERE login = %s"
+    retour = mycursor.execute(sql, (login))
     user = mycursor.fetchone()
     if user:
-        mdp_ok =generate_password_hash(password)
+        mdp_ok = check_password_hash(user['password'], password)
         if not mdp_ok:
             flash(u'Vérifier votre mot de passe et essayer encore.', 'alert-warning')
             return redirect('/login')
@@ -54,7 +54,7 @@ def auth_signup_post():
     login = request.form.get('login')
     password = request.form.get('password')
     tuple_select = (login, email)
-    sql = " requete_auth_security_2  "
+    sql = " SELECT * FROM utilsateur WHERE login = %s OR email = %s "
     retour = mycursor.execute(sql, tuple_select)
     user = mycursor.fetchone()
     if user:
@@ -64,11 +64,11 @@ def auth_signup_post():
     # ajouter un nouveau user
     password = generate_password_hash(password, method='sha256')
     tuple_insert = (login, email, password, 'ROLE_client')
-    sql = """  requete_auth_security_3  """
+    sql = " INSERT INTO utilisateur(login, email, password, role) VALUES(%s, %s, %s, %s) "
     mycursor.execute(sql, tuple_insert)
     get_db().commit()
-    sql = """  requete_auth_security_4  """
-    mycursor.execute(sql)
+    sql = " SELECT * FROM utilisateur WHERE login = %s OR email = %s "
+    mycursor.execute(sql, tuple_select)
     info_last_id = mycursor.fetchone()
     id_user = info_last_id['last_insert_id']
     print('last_insert_id', id_user)
