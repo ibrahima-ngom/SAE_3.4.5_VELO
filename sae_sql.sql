@@ -1,11 +1,11 @@
-    DROP TABLE IF EXISTS taille;
-    DROP TABLE IF EXISTS type_velo;
-    DROP TABLE IF EXISTS velo;
-    DROP TABLE IF EXISTS utilisateur;
-    DROP TABLE IF EXISTS etat;
-    DROP TABLE IF EXISTS commande;
-    DROP TABLE IF EXISTS ligne_commande;
-    DROP TABLE IF EXISTS ligne_panier;
+DROP TABLE IF EXISTS ligne_panier;
+DROP TABLE IF EXISTS ligne_commande;
+DROP TABLE IF EXISTS commande;
+DROP TABLE IF EXISTS etat;
+DROP TABLE IF EXISTS utilisateur;
+DROP TABLE IF EXISTS velo;
+DROP TABLE IF EXISTS type_velo;
+DROP TABLE IF EXISTS taille;
 
     CREATE TABLE taille (
         id_taille INT PRIMARY KEY AUTO_INCREMENT,

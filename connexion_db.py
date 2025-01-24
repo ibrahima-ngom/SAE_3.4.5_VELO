@@ -16,9 +16,9 @@ def get_db():
             cursorclass=pymysql.cursors.DictCursor
         )
         # à activer sur les machines personnelles :
-        activate_db_options(db)
+      #  activate_db_options(db)
     return db
-
+'''
 def activate_db_options(db):
     cursor = db.cursor()
     # Vérifier et activer l'option ONLY_FULL_GROUP_BY si nécessaire
@@ -43,3 +43,4 @@ def activate_db_options(db):
         else :
             print('MYSQL : variable globale lower_case_table_names=0  ok')    # mettre en commentaire
     cursor.close()
+'''
