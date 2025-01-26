@@ -120,43 +120,37 @@ INSERT INTO utilisateur (login, email, password, role, nom, est_actif) VALUES
  'sha256$MjhdGuDELhI82lKY$2161be4a68a9f236a27781a7f981a531d11fdc50e4112d912a7754de2dfa0422',
  'ROLE_client', 'client2', 1);
 
--- Afficher tous les vélos avec leur type et leur taille
+
 SELECT v.nom_velo, v.prix_velo, t.libelle_taille, tv.libelle_type_velo
 FROM velo v
 JOIN taille t ON v.taille_id = t.id_taille
 JOIN type_velo tv ON v.type_velo_id = tv.id_type_velo
 ORDER BY v.prix_velo DESC;
 
--- Afficher le nombre de vélos par type
 SELECT tv.libelle_type_velo, COUNT(*) as nombre_velos
 FROM velo v
 JOIN type_velo tv ON v.type_velo_id = tv.id_type_velo
 GROUP BY tv.libelle_type_velo;
 
--- Afficher les vélos en carbone qui coûtent plus de 4000€
 SELECT nom_velo, prix_velo, matiere
 FROM velo
 WHERE matiere LIKE '%carbone%' AND prix_velo > 4000
 ORDER BY prix_velo;
 
--- Afficher le prix moyen des vélos par type
 SELECT tv.libelle_type_velo, ROUND(AVG(v.prix_velo), 2) as prix_moyen
 FROM velo v
 JOIN type_velo tv ON v.type_velo_id = tv.id_type_velo
 GROUP BY tv.libelle_type_velo;
 
--- Afficher les utilisateurs et leur rôle
 SELECT login, email, role
 FROM utilisateur
 ORDER BY role;
 
--- Afficher les vélos disponibles en taille XL
 SELECT v.nom_velo, v.prix_velo, t.libelle_taille
 FROM velo v
 JOIN taille t ON v.taille_id = t.id_taille
 WHERE t.libelle_taille = 'XL';
 
--- Afficher les marques distinctes de vélos
 SELECT DISTINCT marque
 FROM velo
 ORDER BY marque;
