@@ -120,3 +120,38 @@ INSERT INTO utilisateur(id_utilisateur,login,email,password,role,nom,est_actif) 
 (3,'client2','client2@client2.fr',
     'sha256$MjhdGuDELhI82lKY$2161be4a68a9f236a27781a7f981a531d11fdc50e4112d912a7754de2dfa0422',
     'ROLE_client','client2','1');
+
+
+SELECT v.nom_velo, v.prix_velo, t.libelle_taille, tv.libelle_type_velo
+FROM velo v
+JOIN taille t ON v.taille_id = t.id_taille
+JOIN type_velo tv ON v.type_velo_id = tv.id_type_velo
+ORDER BY v.prix_velo DESC;
+
+SELECT tv.libelle_type_velo, COUNT(*) as nombre_velos
+FROM velo v
+JOIN type_velo tv ON v.type_velo_id = tv.id_type_velo
+GROUP BY tv.libelle_type_velo;
+
+SELECT nom_velo, prix_velo, matiere
+FROM velo
+WHERE matiere LIKE '%carbone%' AND prix_velo > 4000
+ORDER BY prix_velo;
+
+SELECT tv.libelle_type_velo, ROUND(AVG(v.prix_velo), 2) as prix_moyen
+FROM velo v
+JOIN type_velo tv ON v.type_velo_id = tv.id_type_velo
+GROUP BY tv.libelle_type_velo;
+
+SELECT login, email, role
+FROM utilisateur
+ORDER BY role;
+
+SELECT v.nom_velo, v.prix_velo, t.libelle_taille
+FROM velo v
+JOIN taille t ON v.taille_id = t.id_taille
+WHERE t.libelle_taille = 'XL';
+
+SELECT DISTINCT marque
+FROM velo
+ORDER BY marque;
