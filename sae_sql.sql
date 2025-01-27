@@ -1,11 +1,11 @@
-    DROP TABLE IF EXISTS taille;
-    DROP TABLE IF EXISTS type_velo;
-    DROP TABLE IF EXISTS velo;
-    DROP TABLE IF EXISTS utilisateur;
-    DROP TABLE IF EXISTS etat;
-    DROP TABLE IF EXISTS commande;
-    DROP TABLE IF EXISTS ligne_commande;
-    DROP TABLE IF EXISTS ligne_panier;
+DROP TABLE IF EXISTS ligne_panier;
+DROP TABLE IF EXISTS ligne_commande;
+DROP TABLE IF EXISTS commande;
+DROP TABLE IF EXISTS etat;
+DROP TABLE IF EXISTS utilisateur;
+DROP TABLE IF EXISTS velo;
+DROP TABLE IF EXISTS type_velo;
+DROP TABLE IF EXISTS taille;
 
     CREATE TABLE taille (
         id_taille INT PRIMARY KEY AUTO_INCREMENT,
@@ -32,15 +32,16 @@
         FOREIGN KEY (type_velo_id) REFERENCES type_velo(id_type_velo)
     );
 
-    CREATE TABLE utilisateur (
-        id_utilisateur INT PRIMARY KEY AUTO_INCREMENT,
-        login VARCHAR(50) NOT NULL,
-        email VARCHAR(100) NOT NULL,
-        nom VARCHAR(100) NOT NULL,
-        password VARCHAR(255) NOT NULL,
-        role VARCHAR(20) NOT NULL,
-        est_actif TINYINT(1) DEFAULT 1
-    );
+    CREATE TABLE utilisateur(
+   id_utilisateur INT AUTO_INCREMENT,
+   login VARCHAR(255),
+   password VARCHAR(255),
+   email VARCHAR(255),
+   role VARCHAR(255),
+   est_actif tinyint(1),
+   nom VARCHAR(255),
+   PRIMARY KEY(id_utilisateur)
+);
 
     CREATE TABLE etat (
         id_etat INT PRIMARY KEY AUTO_INCREMENT,
@@ -109,7 +110,6 @@ INSERT INTO velo (nom_velo, prix_velo, taille_id, type_velo_id, matiere, descrip
 ('BMC Teammachine R 01 Two Shimano Dura Ace Di2', 13999.00, 5, 1, 'carbonne', 'VTT électrique avec une longue autonomie', 'BMC', 'BMC','BMC Teammachine R 01 Two Shimano Dura Ace Di2.png'),
 ('LOADY', 3929.00, 1, 4, 'Titane', 'le vélo cargo longtail qui s adapte parfaitement à tous vos besoins.', 'velo-de-ville', 'velo-de-ville','Loady.png');
 
-<<<<<<< HEAD
 INSERT INTO utilisateur(id_utilisateur,login,email,password,role,nom,est_actif) VALUES
 (1,'admin','admin@admin.fr',
     'sha256$dPL3oH9ug1wjJqva$2b341da75a4257607c841eb0dbbacb76e780f4015f0499bb1a164de2a893fdbf',
@@ -120,18 +120,6 @@ INSERT INTO utilisateur(id_utilisateur,login,email,password,role,nom,est_actif) 
 (3,'client2','client2@client2.fr',
     'sha256$MjhdGuDELhI82lKY$2161be4a68a9f236a27781a7f981a531d11fdc50e4112d912a7754de2dfa0422',
     'ROLE_client','client2','1');
-=======
-INSERT INTO utilisateur (login, email, password, role, nom, est_actif) VALUES
-('admin', 'admin@admin.fr', 
- 'sha256$dPL3oH9ug1wjJqva$2b341da75a4257607c841eb0dbbacb76e780f4015f0499bb1a164de2a893fdbf',
- 'ROLE_admin', 'admin', 1),
-('client', 'client@client.fr',
- 'sha256$1GAmexw1DkXqlTKK$31d359e9adeea1154f24491edaa55000ee248f290b49b7420ced542c1bf4cf7d',
- 'ROLE_client', 'client', 1),
-('client2', 'client2@client2.fr',
- 'sha256$MjhdGuDELhI82lKY$2161be4a68a9f236a27781a7f981a531d11fdc50e4112d912a7754de2dfa0422',
- 'ROLE_client', 'client2', 1);
->>>>>>> 939342eb8e66e34b840370bcc42956c6138cd952
 
 
 SELECT v.nom_velo, v.prix_velo, t.libelle_taille, tv.libelle_type_velo
@@ -166,8 +154,6 @@ WHERE t.libelle_taille = 'XL';
 
 SELECT DISTINCT marque
 FROM velo
-<<<<<<< HEAD
 ORDER BY marque;
-=======
-ORDER BY marque;
->>>>>>> 939342eb8e66e34b840370bcc42956c6138cd952
+
+
