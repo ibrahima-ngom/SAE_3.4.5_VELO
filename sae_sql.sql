@@ -106,7 +106,7 @@ INSERT INTO velo (nom_velo, prix_velo, taille_id, type_velo_id, matiere, descrip
 ('Santa Cruz Nomad', 6999.00, 2, 1, 'Carbone', 'VTT enduro polyvalent pour terrain difficile', 'Santa Cruz Bicycles', 'Santa Cruz','Santa-Cruz-Nomad.png'),
 ('Endurance SL e - Sport Shimano 105 12-Speed', 3999.00, 4, 3, 'Carbone', 'Vélo de route électrique haut de gamme', 'Ribble Cycles', 'Ribble','Endurance SL e - Sport Shimano 105 12-Speed.png'),
 ('Focus IZALCO MAX 9.9', 4299.00, 4, 2, 'Carbone', 'Vélo de course léger et performant', 'Derby Cycle AG', 'Focus','Focus-IZALCO-MAX-9.9.png'),
-('Lankeleisi MG800Max 2000W',2.599,1,5,'aluminium','VTT électrique avec une autonomie de 100km','Lankeleisi','Lankeleisi','Lankeleisi MG800Max 2000W.png'),
+('Lankeleisi MG800Max 2000W',2599.00,1,5,'aluminium','VTT électrique avec une autonomie de 100km','Lankeleisi','Lankeleisi','Lankeleisi MG800Max 2000W.png'),
 ('BMC Teammachine R 01 Two Shimano Dura Ace Di2', 13999.00, 5, 1, 'carbonne', 'VTT électrique avec une longue autonomie', 'BMC', 'BMC','BMC Teammachine R 01 Two Shimano Dura Ace Di2.png'),
 ('LOADY', 3929.00, 1, 4, 'Titane', 'le vélo cargo longtail qui s adapte parfaitement à tous vos besoins.', 'velo-de-ville', 'velo-de-ville','Loady.png');
 
