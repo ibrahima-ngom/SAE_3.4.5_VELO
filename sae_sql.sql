@@ -48,8 +48,7 @@ DROP TABLE IF EXISTS declinaison_velo;
         stock INT NOT NULL DEFAULT 0,
         FOREIGN KEY (velo_id) REFERENCES velo(id_velo),
         FOREIGN KEY (couleur_id) REFERENCES couleur(id_couleur),
-        FOREIGN KEY (taille_id) REFERENCES taille(id_taille),
-        UNIQUE KEY unique_declinaison (velo_id, couleur_id, taille_id)
+        FOREIGN KEY (taille_id) REFERENCES taille(id_taille)
     );
 
     CREATE TABLE utilisateur(

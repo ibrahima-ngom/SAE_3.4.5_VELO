@@ -24,7 +24,9 @@ def client_article_show():                                 # remplace client_ind
     # utilisation du filtre
     sql3=''' prise en compte des commentaires et des notes dans le SQL    '''
 
-    sql = '''SELECT id_type_velo AS id_type_article, libelle_type_velo AS libelle FROM type_velo'''
+    sql = '''SELECT DISTINCT t.id_type_velo AS id_type_article, t.libelle_type_velo AS libelle 
+             FROM type_velo t
+             INNER JOIN velo v ON t.id_type_velo = v.type_velo_id'''
     mycursor.execute(sql)
 
     # pour le filtre
