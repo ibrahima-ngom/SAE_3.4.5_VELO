@@ -14,9 +14,12 @@ def client_article_show():                                 # remplace client_ind
     mycursor = get_db().cursor()
     id_client = session['id_user']
 
-    sql = '''SELECT id_velo AS id_article ,nom_velo AS nom, prix_velo AS prix,
-            taille_id, type_velo_id, matiere, description, fournisseur, marque, image
-      FROM velo'''
+    sql = '''SELECT v.id_velo AS id_article, v.nom_velo AS nom, v.prix_velo AS prix,
+            v.taille_id, v.type_velo_id, v.matiere, v.description, v.fournisseur, v.marque, v.image,
+            COUNT(dv.id_declinaison) as nb_declinaisons
+            FROM velo v
+            LEFT JOIN declinaison_velo dv ON v.id_velo = dv.velo_id
+            GROUP BY v.id_velo, v.nom_velo, v.prix_velo, v.taille_id, v.type_velo_id, v.matiere, v.description, v.fournisseur, v.marque, v.image'''
     mycursor.execute(sql)
     articles = mycursor.fetchall()
     list_param = []
