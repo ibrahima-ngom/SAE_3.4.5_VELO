@@ -128,7 +128,7 @@ JOIN taille t ON v.taille_id = t.id_taille
 JOIN type_velo tv ON v.type_velo_id = tv.id_type_velo
 ORDER BY v.prix_velo DESC;
 
-SELECT tv.libelle_type_velo, COUNT(*) as nombre_velos
+SELECT tv.libelle_type_velo, COUNT(DISTINCT v.nom_velo) as nombre_velos
 FROM velo v
 JOIN type_velo tv ON v.type_velo_id = tv.id_type_velo
 GROUP BY tv.libelle_type_velo;
