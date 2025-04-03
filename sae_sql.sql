@@ -155,5 +155,3 @@ WHERE t.libelle_taille = 'XL';
 SELECT DISTINCT marque
 FROM velo
 ORDER BY marque;
-
-
