@@ -85,4 +85,3 @@ app.register_blueprint(admin_commentaire)
 
 if __name__ == '__main__':
     app.run()
-
