@@ -262,7 +262,6 @@ INSERT INTO declinaison (taille_id, couleur_id, velo_id, stock) VALUES
 (3, 1, 16, 8), (3, 5, 16, 7), -- M: Noir(8), Vert(7)
 (4, 1, 16, 5), (4, 5, 16, 4), -- L: Noir(5), Vert(4)
 (5, 1, 16, 3), (5, 5, 16, 2); -- XL: Noir(3), Vert(2)
-// ... existing code ...
 
 SELECT v.nom_velo, v.prix_velo, t.libelle_taille, tv.libelle_type_velo
 FROM velo v
