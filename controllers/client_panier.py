@@ -15,28 +15,32 @@ def client_panier_add():
     id_client = session['id_user']
     id_article = request.form.get('id_article')
     quantite = request.form.get('quantite')
-    # ---------
-    #id_declinaison_article=request.form.get('id_declinaison_article',None)
-    id_declinaison_article = 1
+    id_declinaison_article = request.form.get('id_declinaison_article', None)
 
-# ajout dans le panier d'une déclinaison d'un article (si 1 declinaison : immédiat sinon => vu pour faire un choix
-    # sql = '''    '''
-    # mycursor.execute(sql, (id_article))
-    # declinaisons = mycursor.fetchall()
-    # if len(declinaisons) == 1:
-    #     id_declinaison_article = declinaisons[0]['id_declinaison_article']
-    # elif len(declinaisons) == 0:
-    #     abort("pb nb de declinaison")
-    # else:
-    #     sql = '''   '''
-    #     mycursor.execute(sql, (id_article))
-    #     article = mycursor.fetchone()
-    #     return render_template('client/boutique/declinaison_article.html'
-    #                                , declinaisons=declinaisons
-    #                                , quantite=quantite
-    #                                , article=article)
+    # ajout dans le panier d'une déclinaison d'un article (si 1 declinaison : immédiat sinon => vu pour faire un choix
+    sql = '''SELECT d.id_declinaison as id_declinaison_article, d.stock, c.id_couleur, c.libelle as libelle_couleur, c.code as code_couleur, t.id_taille, t.libelle as libelle_taille
+             FROM declinaison d
+             LEFT JOIN couleur c ON d.couleur_id = c.id_couleur
+             LEFT JOIN taille t ON d.taille_id = t.id_taille
+             WHERE d.velo_id = %s'''
+    mycursor.execute(sql, (id_article,))
+    declinaisons = mycursor.fetchall()
+    
+    if len(declinaisons) == 1:
+        id_declinaison_article = declinaisons[0]['id_declinaison_article']
+    elif len(declinaisons) == 0:
+        flash("Aucune déclinaison disponible pour cet article", "alert-warning")
+        return redirect('/client/article/show')
+    else:
+        sql = '''SELECT * FROM velo WHERE id_velo = %s'''
+        mycursor.execute(sql, (id_article,))
+        article = mycursor.fetchone()
+        return render_template('client/boutique/declinaison_article.html',
+                               declinaisons=declinaisons,
+                               quantite=quantite,
+                               article=article)
 
-# ajout dans le panier d'un article
+    # ajout dans le panier d'un article
 
 
     return redirect('/client/article/show')

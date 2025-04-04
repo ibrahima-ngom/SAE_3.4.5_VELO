@@ -16,9 +16,19 @@ def client_article_show():                                 # remplace client_ind
 
     sql = '''SELECT v.id_velo AS id_article, v.nom_velo AS nom, v.prix_velo AS prix,
             v.taille_id, v.type_velo_id, v.matiere, v.description, v.fournisseur, v.marque, v.image,
-            COUNT(dv.id_declinaison) as nb_declinaisons
+            COUNT(d.id_declinaison) as nb_declinaisons,
+            GROUP_CONCAT(
+                CONCAT(
+                    d.id_declinaison, '|',
+                    COALESCE(c.libelle, ''), '|',
+                    COALESCE(t.libelle, ''), '|',
+                    d.stock
+                ) SEPARATOR ';;'
+            ) as declinaisons_info
             FROM velo v
-            LEFT JOIN declinaison_velo dv ON v.id_velo = dv.velo_id
+            LEFT JOIN declinaison d ON v.id_velo = d.velo_id
+            LEFT JOIN couleur c ON d.couleur_id = c.id_couleur
+            LEFT JOIN taille t ON d.taille_id = t.id_taille
             GROUP BY v.id_velo, v.nom_velo, v.prix_velo, v.taille_id, v.type_velo_id, v.matiere, v.description, v.fournisseur, v.marque, v.image'''
     mycursor.execute(sql)
     articles = mycursor.fetchall()

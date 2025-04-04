@@ -40,6 +40,25 @@
 {# #}                                    {% if article.stock > 0 %}
                                         <form  action="/client/panier/add"  method="post" class="col-5">
                                             <input type="hidden" name="id_article" value="{{ article.id_article }}">
+                                            {% if article.nb_declinaisons is defined and article.nb_declinaisons > 0 %}
+                                                <div class="form-group mb-2">
+                                                    <select class="form-control" name="id_declinaison_article" required>
+                                                        <option value="">Choisir une déclinaison</option>
+                                                        {% if article.declinaisons_info %}
+                                                            {% for declinaison in article.declinaisons_info.split(';;') %}
+                                                                {% set decl_info = declinaison.split('|') %}
+                                                                {% if decl_info[3]|int > 0 %}
+                                                                    <option value="{{ decl_info[0] }}">
+                                                                        {% if decl_info[1] %}Couleur: {{ decl_info[1] }}{% endif %}
+                                                                        {% if decl_info[2] %} - Taille: {{ decl_info[2] }}{% endif %}
+                                                                        (Stock: {{ decl_info[3] }})
+                                                                    </option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </select>
+                                                </div>
+                                            {% endif %}
                                             <div class="input-group">
                                             <button class="btn  btn-success"  id="button-addon1">
                                                 <i class="fas fa-shopping-cart">Ajouter</i>
