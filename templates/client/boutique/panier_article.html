@@ -23,6 +23,7 @@
                 {% for article in articles  %}
                         <div class="card col-4 mt-4 p-1">
                             <div class="card-body border-dark rounded p-1">
+                                {% if article is mapping %}
                                 <a href="/client/article/details?id_article={{ article.id_article }}" >
                                 <h3 class="card-title">
                                     <span style="color: #0b2e13">{{ article.nom }}</span><br>
@@ -40,30 +41,11 @@
 {# #}                                    {% if article.stock > 0 %}
                                         <form  action="/client/panier/add"  method="post" class="col-5">
                                             <input type="hidden" name="id_article" value="{{ article.id_article }}">
-                                            {% if article.nb_declinaisons is defined and article.nb_declinaisons > 0 %}
-                                                <div class="form-group mb-2">
-                                                    <select class="form-control" name="id_declinaison_article" required>
-                                                        <option value="">Choisir une déclinaison</option>
-                                                        {% if article.declinaisons_info %}
-                                                            {% for declinaison in article.declinaisons_info.split(';;') %}
-                                                                {% set decl_info = declinaison.split('|') %}
-                                                                {% if decl_info[3]|int > 0 %}
-                                                                    <option value="{{ decl_info[0] }}">
-                                                                        {% if decl_info[1] %}Couleur: {{ decl_info[1] }}{% endif %}
-                                                                        {% if decl_info[2] %} - Taille: {{ decl_info[2] }}{% endif %}
-                                                                        (Stock: {{ decl_info[3] }})
-                                                                    </option>
-                                                                {% endif %}
-                                                            {% endfor %}
-                                                        {% endif %}
-                                                    </select>
-                                                </div>
-                                            {% endif %}
                                             <div class="input-group">
                                             <button class="btn  btn-success"  id="button-addon1">
                                                 <i class="fas fa-shopping-cart">Ajouter</i>
                                             </button>
-                                            <input type="number" id="input-{{ article.id_article }}" step="1" min="0" max="{{ article.stock }}" class="form-control" value="1" name="quantite"  aria-describedby="button-addon1">
+                                            <input type="number" id="input-{{ article.id_article }}" step="1" min="0" max="{{ article.stock_total }}" class="form-control" value="1" name="quantite"  aria-describedby="button-addon1">
                                             </div>
                                         </form>
 {# #}                                    {% endif %}
@@ -80,17 +62,20 @@
                                 </div>
                             </div>
                             <div class="card-footer">
-                            {% if article.stock is defined and article.stock != None %}
-                                 {% if article.stock > 0 %}
-                                    <small class="text-muted">Stock restant : {{ article.stock }}</small>
-                                 {% else %}
-                                    <small class="text-muted">article  momentanément indisponible</small>
-                                 {% endif %}
-                                {% if article.nb_declinaisons is defined and article.nb_declinaisons > 0 %}
-                                    ({{ article.nb_declinaisons }} d.)
+                            {% if article.stock_total is defined and article.stock_total is not none %}
+                                {% if article.stock_total > 0 %}
+                                    <small class="text-muted">Stock total : {{ article.stock_total }}</small>
+                                    {% if article.nb_declinaisons is defined %}
+                                        <br>
+                                        <small class="text-muted">Nombre de déclinaisons : {{ article.nb_declinaisons }}</small>
+                                    {% endif %}
+                                {% else %}
+                                    <small class="text-muted">Article momentanément indisponible</small>
                                 {% endif %}
-                                <br>
+                            {% else %}
+                                <small class="text-muted">Stock non disponible</small>
                             {% endif %}
+                            <br>
                             {% if article.nb_notes is defined %}
                                 {% if article.nb_notes > 0 %}
                                  <a  href="/client/article/details?id_article={{ article.id_article }}" >
@@ -106,6 +91,11 @@
                                 {% endif %}
                             {% endif %}
                             </div>
+                        {% else %}
+                            <div class="card-body">
+                                <p>Données d'article non disponibles</p>
+                            </div>
+                        {% endif %}
                         </div>
                 {% endfor %}
         </div>

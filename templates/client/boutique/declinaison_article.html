@@ -22,6 +22,7 @@
         </div>
 
             <form action="/client/panier/add" method="post" class="col-8 mt-4">
+                <input type="hidden" name="id_article" value="{{ article.id_article }}">
                 <div class="form-group">
                     <label for="declinaison">Choisissez une déclinaison :</label>
                     <select class="form-control" id="declinaison" name="id_declinaison_article" required>

@@ -12,9 +12,9 @@
              <span style="color: #0b2e13">{{ article.nom }}</span> &nbsp;{{ article.prix }} €
          </h2>
         <div class="card-body">
-        {%  if article.image is not none %}
+        {%  if article is defined and article is not none and article.image is defined and article.image is not none %}
             <img class="card-img-top rounded mx-auto d-block"  style="width:100px;height:100px"  src="{{ url_for('static', filename = 'images/' + article.image) }}"  alt="image  de {{ article.nom }}" >
-        {% else %} <img class="card-img-top rounded mx-auto d-block"   style="width:100px;height:100px"   src="{{ url_for('static', filename='images/no_photo.jpeg')}}"  alt="image  de {{ article.nom }}" >
+        {% else %} <img class="card-img-top rounded mx-auto d-block"   style="width:100px;height:100px"   src="{{ url_for('static', filename='images/no_photo.jpeg')}}"  alt="image non disponible" >
         {% endif %}
 
 

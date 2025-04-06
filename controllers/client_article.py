@@ -17,14 +17,7 @@ def client_article_show():                                 # remplace client_ind
     sql = '''SELECT v.id_velo AS id_article, v.nom_velo AS nom, v.prix_velo AS prix,
             v.type_velo_id, v.matiere, v.description, v.fournisseur, v.marque, v.image,
             COUNT(d.id_declinaison) as nb_declinaisons,
-            GROUP_CONCAT(
-                CONCAT(
-                    d.id_declinaison, '|',
-                    COALESCE(c.libelle_couleur, ''), '|',
-                    COALESCE(t.libelle_taille, ''), '|',
-                    d.stock
-                ) SEPARATOR ';;'
-            ) as declinaisons_info
+            SUM(d.stock) as stock_total
             FROM velo v
             LEFT JOIN declinaison d ON v.id_velo = d.velo_id
             LEFT JOIN couleur c ON d.couleur_id = c.id_couleur
@@ -32,6 +25,35 @@ def client_article_show():                                 # remplace client_ind
             GROUP BY v.id_velo, v.nom_velo, v.prix_velo, v.type_velo_id, v.matiere, v.description, v.fournisseur, v.marque, v.image'''
     mycursor.execute(sql)
     articles = mycursor.fetchall()
+    
+    # Récupération des informations sur les déclinaisons pour chaque article
+    for article in articles:
+        if article['nb_declinaisons'] > 0:
+            sql = '''SELECT d.id_declinaison, d.stock, c.libelle_couleur, t.libelle_taille
+                     FROM declinaison d
+                     LEFT JOIN couleur c ON d.couleur_id = c.id_couleur
+                     LEFT JOIN taille t ON d.taille_id = t.id_taille
+                     WHERE d.velo_id = %s'''
+            mycursor.execute(sql, (article['id_article'],))
+            declinaisons = mycursor.fetchall()
+            
+            # Construction d'une chaîne d'informations sur les déclinaisons
+            declinaisons_info = []
+            for decl in declinaisons:
+                info = f"{decl['id_declinaison']}|"
+                if decl['libelle_couleur']:
+                    info += f"{decl['libelle_couleur']}|"
+                else:
+                    info += "|"
+                if decl['libelle_taille']:
+                    info += f"{decl['libelle_taille']}|"
+                else:
+                    info += "|"
+                info += f"{decl['stock']}"
+                declinaisons_info.append(info)
+            
+            article['declinaisons_info'] = ";;".join(declinaisons_info)
+    
     list_param = []
     condition_and = ""
     # utilisation du filtre

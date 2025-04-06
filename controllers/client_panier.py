@@ -17,8 +17,8 @@ def client_panier_add():
     quantite = request.form.get('quantite')
     id_declinaison_article = request.form.get('id_declinaison_article', None)
 
-    # ajout dans le panier d'une déclinaison d'un article (si 1 declinaison : immédiat sinon => vu pour faire un choix
-    sql = '''SELECT d.id_declinaison as id_declinaison_article, d.stock, c.id_couleur, c.libelle as libelle_couleur, c.code as code_couleur, t.id_taille, t.libelle as libelle_taille
+    # Récupération des déclinaisons de l'article
+    sql = '''SELECT d.id_declinaison as id_declinaison_article, d.stock, c.id_couleur, c.libelle_couleur, c.code as code_couleur, t.id_taille, t.libelle_taille
              FROM declinaison d
              LEFT JOIN couleur c ON d.couleur_id = c.id_couleur
              LEFT JOIN taille t ON d.taille_id = t.id_taille
@@ -26,22 +26,49 @@ def client_panier_add():
     mycursor.execute(sql, (id_article,))
     declinaisons = mycursor.fetchall()
     
+    # Si l'article n'a qu'une seule déclinaison, on l'ajoute directement au panier
     if len(declinaisons) == 1:
         id_declinaison_article = declinaisons[0]['id_declinaison_article']
+        # Ajout au panier
+        sql = '''INSERT INTO ligne_panier (utilisateur_id, velo_id, declinaison_id, quantite) 
+                 VALUES (%s, %s, %s, %s)'''
+        mycursor.execute(sql, (id_client, id_article, id_declinaison_article, quantite))
+        get_db().commit()
+        flash("Article ajouté au panier", "alert-success")
+        return redirect('/client/article/show')
+    # Si l'article n'a pas de déclinaison
     elif len(declinaisons) == 0:
         flash("Aucune déclinaison disponible pour cet article", "alert-warning")
         return redirect('/client/article/show')
+    # Si l'article a plusieurs déclinaisons, on redirige vers la page de sélection
     else:
-        sql = '''SELECT * FROM velo WHERE id_velo = %s'''
-        mycursor.execute(sql, (id_article,))
-        article = mycursor.fetchone()
-        return render_template('client/boutique/declinaison_article.html',
-                               declinaisons=declinaisons,
-                               quantite=quantite,
-                               article=article)
-
-    # ajout dans le panier d'un article
-
+        # Si une déclinaison a été sélectionnée, on l'ajoute au panier
+        if id_declinaison_article:
+            # Vérification que la déclinaison existe et a du stock
+            sql = '''SELECT stock FROM declinaison WHERE id_declinaison = %s AND velo_id = %s'''
+            mycursor.execute(sql, (id_declinaison_article, id_article))
+            declinaison = mycursor.fetchone()
+            
+            if declinaison and declinaison['stock'] >= int(quantite):
+                # Ajout au panier
+                sql = '''INSERT INTO ligne_panier (utilisateur_id, velo_id, declinaison_id, quantite) 
+                         VALUES (%s, %s, %s, %s)'''
+                mycursor.execute(sql, (id_client, id_article, id_declinaison_article, quantite))
+                get_db().commit()
+                flash("Article ajouté au panier", "alert-success")
+                return redirect('/client/article/show')
+            else:
+                flash("Stock insuffisant pour cette déclinaison", "alert-warning")
+                return redirect('/client/article/show')
+        else:
+            # Sinon, on affiche la page de sélection de déclinaison
+            sql = '''SELECT * FROM velo WHERE id_velo = %s'''
+            mycursor.execute(sql, (id_article,))
+            article = mycursor.fetchone()
+            return render_template('client/boutique/declinaison_article.html',
+                                   declinaisons=declinaisons,
+                                   quantite=quantite,
+                                   article=article)
 
     return redirect('/client/article/show')
 
