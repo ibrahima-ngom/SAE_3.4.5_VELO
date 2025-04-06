@@ -8,7 +8,7 @@
         <div class="row mt-5">
             article : <strong>{{ declinaison_article.nom }}</strong><br>
             {% if declinaison_article.image_article is defined and declinaison_article.image_article is not none %}
-            <img class="card-img-top rounded mx-4 d-block"  style="width:200px; height:200px; border: 1px solid black; padding: 25px;"  src="{{ url_for('static', filename = 'images/')}}{{ declinaison_article.image_article}}"  alt="image  de {{ declinaison_article["libelle"] }}" >
+            <img style="width:150px;height:150px; border: 1px solid black; padding: 25px;"  src="{{ url_for('static', filename = 'images/' + declinaison_article.image_article) }}"  alt="image  de {{ declinaison_article['libelle'] }}" >
             {% else %}
             <i class="card-img-top rounded mx-4 d-block">pas de photo</i>{#{{ declinaison_article|pprint }}#}
             {% endif %}
