@@ -58,7 +58,7 @@ DROP TABLE IF EXISTS declinaison;
         role VARCHAR(255),
         est_actif tinyint(1),
         nom VARCHAR(255),
-        PRIMARY KEY(id_utilisateur)
+        PRIMARY KEY(id_utilisateur) 
     );
 
     CREATE TABLE etat (
@@ -296,5 +296,12 @@ WHERE t.libelle_taille = 'XL';
 SELECT DISTINCT marque
 FROM velo
 ORDER BY marque;
+
+SELECT v.nom_velo, t.libelle_taille, c.libelle_couleur, d.stock
+FROM declinaison d
+JOIN velo v ON d.velo_id = v.id_velo 
+JOIN taille t ON d.taille_id = t.id_taille
+JOIN couleur c ON d.couleur_id = c.id_couleur
+ORDER BY v.nom_velo, t.libelle_taille, c.libelle_couleur;
 
 

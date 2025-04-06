@@ -17,8 +17,12 @@ admin_article = Blueprint('admin_article', __name__,
 @admin_article.route('/admin/article/show')
 def show_article():
     mycursor = get_db().cursor()
-    sql = '''  requête admin_article_1
-    '''
+    sql = '''SELECT v.id_velo AS id_article, v.nom_velo AS nom, v.prix_velo AS prix, 
+             v.type_velo_id, v.matiere, v.description, v.fournisseur, v.marque, v.image,
+             COUNT(d.id_declinaison) as nb_declinaison
+             FROM velo v
+             LEFT JOIN declinaison d ON v.id_velo = d.velo_id
+             GROUP BY v.id_velo, v.nom_velo, v.prix_velo, v.type_velo_id, v.matiere, v.description, v.fournisseur, v.marque, v.image'''
     mycursor.execute(sql)
     articles = mycursor.fetchall()
     return render_template('admin/article/show_article.html', articles=articles)
@@ -71,21 +75,21 @@ def valid_add_article():
 def delete_article():
     id_article=request.args.get('id_article')
     mycursor = get_db().cursor()
-    sql = ''' requête admin_article_3 '''
-    mycursor.execute(sql, id_article)
+    sql = '''SELECT COUNT(*) as nb_declinaison FROM declinaison WHERE velo_id = %s'''
+    mycursor.execute(sql, (id_article,))
     nb_declinaison = mycursor.fetchone()
     if nb_declinaison['nb_declinaison'] > 0:
         message= u'il y a des declinaisons dans cet article : vous ne pouvez pas le supprimer'
         flash(message, 'alert-warning')
     else:
-        sql = ''' requête admin_article_4 '''
-        mycursor.execute(sql, id_article)
+        sql = '''SELECT * FROM velo WHERE id_velo = %s'''
+        mycursor.execute(sql, (id_article,))
         article = mycursor.fetchone()
         print(article)
         image = article['image']
 
-        sql = ''' requête admin_article_5  '''
-        mycursor.execute(sql, id_article)
+        sql = '''DELETE FROM velo WHERE id_velo = %s'''
+        mycursor.execute(sql, (id_article,))
         get_db().commit()
         if image != None:
             os.remove('static/images/' + image)
@@ -101,28 +105,17 @@ def delete_article():
 def edit_article():
     id_article=request.args.get('id_article')
     mycursor = get_db().cursor()
-    sql = '''
-    requête admin_article_6    
-    '''
-    mycursor.execute(sql, id_article)
+    sql = '''SELECT * FROM velo WHERE id_velo = %s'''
+    mycursor.execute(sql, (id_article,))
     article = mycursor.fetchone()
     print(article)
-    sql = '''
-    requête admin_article_7
-    '''
+    sql = '''SELECT * FROM type_velo'''
     mycursor.execute(sql)
     types_article = mycursor.fetchall()
-
-    # sql = '''
-    # requête admin_article_6
-    # '''
-    # mycursor.execute(sql, id_article)
-    # declinaisons_article = mycursor.fetchall()
 
     return render_template('admin/article/edit_article.html'
                            ,article=article
                            ,types_article=types_article
-                         #  ,declinaisons_article=declinaisons_article
                            )
 
 
@@ -135,23 +128,20 @@ def valid_edit_article():
     type_article_id = request.form.get('type_article_id', '')
     prix = request.form.get('prix', '')
     description = request.form.get('description')
-    sql = '''
-       requête admin_article_8
-       '''
-    mycursor.execute(sql, id_article)
+    sql = '''SELECT image FROM velo WHERE id_velo = %s'''
+    mycursor.execute(sql, (id_article,))
     image_nom = mycursor.fetchone()
     image_nom = image_nom['image']
     if image:
         if image_nom != "" and image_nom is not None and os.path.exists(
                 os.path.join(os.getcwd() + "/static/images/", image_nom)):
             os.remove(os.path.join(os.getcwd() + "/static/images/", image_nom))
-        # filename = secure_filename(image.filename)
         if image:
             filename = 'img_upload_' + str(int(2147483647 * random())) + '.png'
             image.save(os.path.join('static/images/', filename))
             image_nom = filename
 
-    sql = '''  requête admin_article_9 '''
+    sql = '''UPDATE velo SET nom_velo = %s, image = %s, prix_velo = %s, type_velo_id = %s, description = %s WHERE id_velo = %s'''
     mycursor.execute(sql, (nom, image_nom, prix, type_article_id, description, id_article))
 
     get_db().commit()

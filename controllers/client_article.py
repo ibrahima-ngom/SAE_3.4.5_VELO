@@ -15,13 +15,13 @@ def client_article_show():                                 # remplace client_ind
     id_client = session['id_user']
 
     sql = '''SELECT v.id_velo AS id_article, v.nom_velo AS nom, v.prix_velo AS prix,
-            v.taille_id, v.type_velo_id, v.matiere, v.description, v.fournisseur, v.marque, v.image,
+            v.type_velo_id, v.matiere, v.description, v.fournisseur, v.marque, v.image,
             COUNT(d.id_declinaison) as nb_declinaisons,
             GROUP_CONCAT(
                 CONCAT(
                     d.id_declinaison, '|',
-                    COALESCE(c.libelle, ''), '|',
-                    COALESCE(t.libelle, ''), '|',
+                    COALESCE(c.libelle_couleur, ''), '|',
+                    COALESCE(t.libelle_taille, ''), '|',
                     d.stock
                 ) SEPARATOR ';;'
             ) as declinaisons_info
@@ -29,7 +29,7 @@ def client_article_show():                                 # remplace client_ind
             LEFT JOIN declinaison d ON v.id_velo = d.velo_id
             LEFT JOIN couleur c ON d.couleur_id = c.id_couleur
             LEFT JOIN taille t ON d.taille_id = t.id_taille
-            GROUP BY v.id_velo, v.nom_velo, v.prix_velo, v.taille_id, v.type_velo_id, v.matiere, v.description, v.fournisseur, v.marque, v.image'''
+            GROUP BY v.id_velo, v.nom_velo, v.prix_velo, v.type_velo_id, v.matiere, v.description, v.fournisseur, v.marque, v.image'''
     mycursor.execute(sql)
     articles = mycursor.fetchall()
     list_param = []
@@ -49,8 +49,12 @@ def client_article_show():                                 # remplace client_ind
     articles_panier = []
 
     if len(articles_panier) >= 1:
-        sql = ''' calcul du prix total du panier '''
-        prix_total = None
+        sql = '''SELECT SUM(v.prix_velo * lp.quantite) as prix_total 
+                 FROM ligne_panier lp 
+                 JOIN velo v ON lp.velo_id = v.id_velo 
+                 WHERE lp.utilisateur_id = %s'''
+        mycursor.execute(sql, (id_client,))
+        prix_total = mycursor.fetchone()['prix_total']
     else:
         prix_total = None
     return render_template('client/boutique/panier_article.html'
