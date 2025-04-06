@@ -19,10 +19,12 @@ def client_article_show():                                 # remplace client_ind
             COUNT(d.id_declinaison) as nb_declinaisons,
             SUM(d.stock) as stock_total
             FROM velo v
-            LEFT JOIN declinaison d ON v.id_velo = d.velo_id
+            INNER JOIN declinaison d ON v.id_velo = d.velo_id
             LEFT JOIN couleur c ON d.couleur_id = c.id_couleur
             LEFT JOIN taille t ON d.taille_id = t.id_taille
-            GROUP BY v.id_velo, v.nom_velo, v.prix_velo, v.type_velo_id, v.matiere, v.description, v.fournisseur, v.marque, v.image'''
+            WHERE d.stock > 0
+            GROUP BY v.id_velo, v.nom_velo, v.prix_velo, v.type_velo_id, v.matiere, v.description, v.fournisseur, v.marque, v.image
+            HAVING COUNT(d.id_declinaison) > 0'''
     mycursor.execute(sql)
     articles = mycursor.fetchall()
     

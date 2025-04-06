@@ -69,6 +69,18 @@
                                         <br>
                                         <small class="text-muted">Nombre de déclinaisons : {{ article.nb_declinaisons }}</small>
                                     {% endif %}
+                                    <br>
+                                    <form action="/client/panier/add" method="post" class="mt-2">
+                                        <input type="hidden" name="id_article" value="{{ article.id_article }}">
+                                        <input type="hidden" name="quantite" value="1">
+                                        <button type="submit" class="btn btn-primary">
+                                            {% if article.nb_declinaisons == 1 %}
+                                                Ajouter au panier
+                                            {% else %}
+                                                Choisir la déclinaison
+                                            {% endif %}
+                                        </button>
+                                    </form>
                                 {% else %}
                                     <small class="text-muted">Article momentanément indisponible</small>
                                 {% endif %}

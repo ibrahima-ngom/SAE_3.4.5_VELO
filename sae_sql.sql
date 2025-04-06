@@ -88,11 +88,13 @@ DROP TABLE IF EXISTS declinaison;
     CREATE TABLE ligne_panier (
         utilisateur_id INT NOT NULL,
         article_id INT NOT NULL,
+        id_declinaison INT NOT NULL,
         quantite INT NOT NULL,
         date_ajout DATETIME NOT NULL,
         PRIMARY KEY (utilisateur_id, article_id),
         FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id_utilisateur),
-        FOREIGN KEY (article_id) REFERENCES velo(id_velo)
+        FOREIGN KEY (article_id) REFERENCES velo(id_velo),
+        FOREIGN KEY (id_declinaison) REFERENCES declinaison(id_declinaison)
     );
 
     INSERT INTO couleur (libelle_couleur) VALUES
